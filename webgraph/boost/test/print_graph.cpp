@@ -43,21 +43,21 @@ int main(int argc, char** argv) {
    cerr << "Here are the vertices ...." << endl;
    
    bv_traits::vertex_iterator v, v_end;
-   for( tie( v, v_end ) = boost::vertices( *gp ); v != v_end; ++v ) {
+   for( boost::tie( v, v_end ) = boost::vertices( *gp ); v != v_end; ++v ) {
       cerr << *v << endl;
    }
    
    cerr << "Here are the vertices again ...." << endl;
    
    bv_traits::vertex_iterator v2, v2_end;
-   for( tie( v2, v2_end ) = boost::vertices( *gp ); v2 != v2_end; ++v2 ) {
+   for( boost::tie( v2, v2_end ) = boost::vertices( *gp ); v2 != v2_end; ++v2 ) {
       cerr << *v2 << endl;
    }
 
    cerr << "Now here are the edges..." << endl;
    
    bv_traits::edge_iterator e, e_end;
-   for( tie( e, e_end ) = boost::edges( *gp ); e != e_end; ++e ) {
+   for( boost::tie( e, e_end ) = boost::edges( *gp ); e != e_end; ++e ) {
       cerr << "<" << e->first << ", " << e->second << ">" << endl;
    }
 

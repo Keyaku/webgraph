@@ -1,4 +1,4 @@
-/*               
+/*					
  * Portions copyright (c) 2003-2007, Paolo Boldi and Sebastiano Vigna. Translation copyright (c) 2007, Jacob Ratkiewicz
  *
  *  This program is free software; you can redistribute it and/or modify it
@@ -26,41 +26,41 @@
 
 
 namespace webgraph { namespace bv_graph { namespace boost_integration {
-   class out_edge_iterator : public boost::iterator_facade<out_edge_iterator,
-                                                           edge_descriptor,
-                                                           boost::forward_traversal_tag,
-                                                           edge_descriptor> {
-   private:
-      vertex_descriptor v;
-      webgraph::bv_graph::graph::successor_iterator s, s_end;
-      edge_descriptor cur_edge;
+	class out_edge_iterator : public boost::iterator_facade<out_edge_iterator,
+																			  edge_descriptor,
+																			  boost::forward_traversal_tag,
+																			  edge_descriptor> {
+	private:
+		vertex_descriptor v;
+		webgraph::bv_graph::graph::successor_iterator s, s_end;
+		edge_descriptor cur_edge;
 
-   public:
-      out_edge_iterator( const vertex_descriptor& v,
-                         const webgraph::bv_graph::graph& g ) {
-         boost::tie( s, s_end ) = g.get_successors( v );
-         cur_edge = make_pair( v, *s );
-      }
+	public:
+		out_edge_iterator( const vertex_descriptor& v,
+								 const webgraph::bv_graph::graph& g ) {
+			boost::tie( s, s_end ) = g.get_successors( v );
+			cur_edge = make_pair( v, *s );
+		}
 
-      out_edge_iterator() {}
+		out_edge_iterator() {}
 
-      friend class boost::iterator_core_access;
-   private:
-      void increment() {
-         ++s;
-         cur_edge = make_pair( v, *s );
-      }
+		friend class boost::iterator_core_access;
+	private:
+		void increment() {
+			++s;
+			cur_edge = make_pair( v, *s );
+		}
 
-      edge_descriptor dereference() const {
-         return cur_edge;
-      }
-      
-      bool equal( const out_edge_iterator& other ) const {
-         return 
-            (s == s_end && other.s == other.s_end) ||
-            (s == other.s && s_end == other.s_end);
-      }
-   };
+		edge_descriptor dereference() const {
+			return cur_edge;
+		}
+		
+		bool equal( const out_edge_iterator& other ) const {
+			return 
+				(s == s_end && other.s == other.s_end) ||
+				(s == other.s && s_end == other.s_end);
+		}
+	};
 }}}
 
 #endif

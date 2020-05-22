@@ -1,4 +1,4 @@
-/*               
+/*					
  * Portions copyright (c) 2003-2007, Paolo Boldi and Sebastiano Vigna. Translation copyright (c) 2007, Jacob Ratkiewicz
  *
  *  This program is free software; you can redistribute it and/or modify it
@@ -30,34 +30,34 @@ namespace webgraph
 class properties
 {
 private:
-   std::map<std::string, std::string> back;
+	std::map<std::string, std::string> back;
  
 public:
-   properties();
-   virtual ~properties();
-   
-   void load( std::istream& in );
-
-   void store( std::ostream& out );
-   void store( std::ostream& out, const std::string& title );
+	properties();
+	virtual ~properties();
 	
-   void set_property( const std::string key, std::string value ) {
-      back[key] = value;
-   }
-   
-   bool has_property( const std::string& name ) const {
-      using namespace std;
-      map<string, string>::const_iterator i = back.find( name );
+	void load( std::istream& in );
 
-      if( i == back.end() )
-         return false;
-      else
-         return true;
-   }
-   
-   std::string get_property( const std::string& name ) const {
-      return back.find(name)->second;
-   }
+	void store( std::ostream& out );
+	void store( std::ostream& out, const std::string& title );
+	
+	void set_property( const std::string key, std::string value ) {
+		back[key] = value;
+	}
+	
+	bool has_property( const std::string& name ) const {
+		using namespace std;
+		map<string, string>::const_iterator i = back.find( name );
+
+		if( i == back.end() )
+			return false;
+		else
+			return true;
+	}
+	
+	std::string get_property( const std::string& name ) const {
+		return back.find(name)->second;
+	}
 };
 
 }

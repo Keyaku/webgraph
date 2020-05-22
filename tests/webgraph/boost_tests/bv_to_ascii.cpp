@@ -170,7 +170,7 @@ void do_conversion_vertex( boost::shared_ptr<graph_type> gp,
         ++v ) {
       // retrieve and print the successor list.
       adj_itor_t a, a_end;
-      tie( a, a_end ) = boost::adjacent_vertices( *v, *gp );
+      boost::tie( a, a_end ) = boost::adjacent_vertices( *v, *gp );
       
       if( a != a_end ) {
          out << *a++;

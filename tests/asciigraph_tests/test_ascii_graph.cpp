@@ -53,7 +53,7 @@ int main( int argc, char* argv[] ) {
 void print_first_n_edges( webgraph::ascii_graph::offline_graph o, int n ) {
    offline_graph::edge_iterator begin, end;
         
-   tie( begin, end ) = o.get_edge_iterator();
+   boost::tie( begin, end ) = o.get_edge_iterator();
         
    cerr << "About to start printing first " << n << " edges.\n";
         
@@ -81,7 +81,7 @@ void print_all_vertices_and_edges( webgraph::ascii_graph::offline_graph oag ) {
 //   cerr << o.get_vertex_iterator().first.as_str() << endl;
 //   cerr << o.get_vertex_iterator().second.as_str() << endl;
 
-//   cerr << "Now tie them, and see what they look like afterwards.\n";
+//   cerr << "Now boost::tie them, and see what they look like afterwards.\n";
 
    boost::tie( begin, end ) = oag.get_vertex_iterator();
 
@@ -112,7 +112,7 @@ void print_all_vertices_and_edges( webgraph::ascii_graph::offline_graph oag ) {
         
    offline_graph::edge_iterator e_begin, e_end;
         
-   tie( e_begin, e_end ) = oag.get_edge_iterator();
+   boost::tie( e_begin, e_end ) = oag.get_edge_iterator();
         
    cerr << "Got edge iterator.\n";
         

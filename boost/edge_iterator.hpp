@@ -1,4 +1,4 @@
-/*               
+/*					
  * Portions copyright (c) 2003-2007, Paolo Boldi and Sebastiano Vigna. Translation copyright (c) 2007, Jacob Ratkiewicz
  *
  *  This program is free software; you can redistribute it and/or modify it
@@ -31,69 +31,69 @@
 
 namespace webgraph { namespace bv_graph { namespace boost_integration {
 
-   class edge_iterator : public boost::iterator_facade<edge_iterator,
-                                                      edge_descriptor,
-                                                      boost::forward_traversal_tag,
-                                                      edge_descriptor> {
-   private:
-      // data members
-      webgraph::bv_graph::graph::node_iterator v, v_end;
-      webgraph::bv_graph::graph::successor_iterator s, s_end;
-      vertex_descriptor current_vertex;
-      bool end_marker;
-      
-   public:
-      // interface
-      edge_iterator( const webgraph::bv_graph::graph& gg ) {
+	class edge_iterator : public boost::iterator_facade<edge_iterator,
+																		edge_descriptor,
+																		boost::forward_traversal_tag,
+																		edge_descriptor> {
+	private:
+		// data members
+		webgraph::bv_graph::graph::node_iterator v, v_end;
+		webgraph::bv_graph::graph::successor_iterator s, s_end;
+		vertex_descriptor current_vertex;
+		bool end_marker;
+		
+	public:
+		// interface
+		edge_iterator( const webgraph::bv_graph::graph& gg ) {
 
-         tie( v, v_end ) = gg.get_node_iterator(0);
+			boost::tie( v, v_end ) = gg.get_node_iterator(0);
 
-         assert( v != v_end );
+			assert( v != v_end );
 
-         do {
-            
-            tie( s, s_end ) = successors( v );
-            current_vertex = *v;
-            ++v;
-         } while( s == s_end && v != v_end );
+			do {
+				
+				boost::tie( s, s_end ) = successors( v );
+				current_vertex = *v;
+				++v;
+			} while( s == s_end && v != v_end );
 
 
-         end_marker = s == s_end; // shouldn't happen...
-      }
-      
-      edge_iterator() {
-         end_marker = true;
-      }
+			end_marker = s == s_end; // shouldn't happen...
+		}
+		
+		edge_iterator() {
+			end_marker = true;
+		}
 
-      friend class boost::iterator_core_access;
-   private:
-      ////////////////////////////////////////////////////////////////////////////////
-      void increment() {
-         ++s;
+		friend class boost::iterator_core_access;
+	private:
+		////////////////////////////////////////////////////////////////////////////////
+		void increment() {
+			++s;
 
-         while( s == s_end && v != v_end ) {
-            tie( s, s_end ) = successors( v );
-            current_vertex = *v;
-            ++v;
-         }
+			while( s == s_end && v != v_end ) {
+				boost::tie( s, s_end ) = successors( v );
+				current_vertex = *v;
+				++v;
+			}
 
-         end_marker = s == s_end;
-      }
+			end_marker = s == s_end;
+		}
 
-      ////////////////////////////////////////////////////////////////////////////////
-      edge_descriptor dereference() const {
-         return make_pair( current_vertex, *s );
-      }
+		////////////////////////////////////////////////////////////////////////////////
+		edge_descriptor dereference() const {
+			return make_pair( current_vertex, *s );
+		}
 
-      ////////////////////////////////////////////////////////////////////////////////
-      bool equal( const edge_iterator& other ) const {
-         if( end_marker && other.end_marker ) {
-            return true;
-         } else {
-            return v == other.v && s == other.s;
-         }
-      }
-   };
+		////////////////////////////////////////////////////////////////////////////////
+		bool equal( const edge_iterator& other ) const {
+			if( end_marker && other.end_marker ) {
+				return true;
+			} else {
+				return v == other.v && s == other.s;
+			}
+		}
+	};
 }}}
 
 #endif

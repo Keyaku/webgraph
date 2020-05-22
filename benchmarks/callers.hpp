@@ -11,31 +11,31 @@ namespace benchmark {
 namespace ibs {
 
 struct caller_base {
-   virtual int operator() (webgraph::ibitstream* i) = 0;	
+	virtual int operator() (webgraph::ibitstream* i) = 0;	
 };
 
 struct gamma_caller : public caller_base {
-   virtual int operator() (webgraph::ibitstream* i) {
-      return i->read_gamma();
-   }
+	virtual int operator() (webgraph::ibitstream* i) {
+		return i->read_gamma();
+	}
 };
 
 struct delta_caller : public caller_base {
-   virtual int operator() (webgraph::ibitstream* i) {
-      return i->read_delta();
-   }
+	virtual int operator() (webgraph::ibitstream* i) {
+		return i->read_delta();
+	}
 };
 
 struct zeta_caller : public caller_base {
-   virtual int operator() (webgraph::ibitstream* i) {
-      return i->read_zeta(5);
-   }
+	virtual int operator() (webgraph::ibitstream* i) {
+		return i->read_zeta(5);
+	}
 };
 
 struct nibble_caller : public caller_base {
-   virtual int operator() (webgraph::ibitstream* i) {
-      return i->read_nibble();
-   }
+	virtual int operator() (webgraph::ibitstream* i) {
+		return i->read_nibble();
+	}
 };
 
 }
@@ -44,31 +44,31 @@ struct nibble_caller : public caller_base {
 namespace obs {
 
 struct caller_base {
-   virtual void operator() ( webgraph::obitstream* i, int param ) = 0;	
+	virtual void operator() ( webgraph::obitstream* i, int param ) = 0;	
 };
 
 struct gamma_caller : public caller_base {
-   virtual void operator() ( webgraph::obitstream* o, int param ) {
-      o->write_gamma( param );
-   }
+	virtual void operator() ( webgraph::obitstream* o, int param ) {
+		o->write_gamma( param );
+	}
 };
 
 struct delta_caller : public caller_base {
-   virtual void operator() ( webgraph::obitstream* o, int param ) {
-      o->write_delta( param );
-   }
+	virtual void operator() ( webgraph::obitstream* o, int param ) {
+		o->write_delta( param );
+	}
 };
 
 struct zeta_caller : public caller_base {
-   virtual void operator() ( webgraph::obitstream* o, int param ) {
-      o->write_zeta( param, 5 );
-   }
+	virtual void operator() ( webgraph::obitstream* o, int param ) {
+		o->write_zeta( param, 5 );
+	}
 };
 
 struct nibble_caller : public caller_base {
-   virtual void operator() ( webgraph::obitstream* o, int param ) {
-      o->write_nibble( param );
-   }
+	virtual void operator() ( webgraph::obitstream* o, int param ) {
+		o->write_nibble( param );
+	}
 };
 
 }

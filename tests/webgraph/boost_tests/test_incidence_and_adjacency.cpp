@@ -35,11 +35,11 @@ int main(int argc, char** argv) {
    cerr << "Here are the vertices, with their successors." << endl;
    
    bv_traits::vertex_iterator v, v_end;
-   for( tie( v, v_end ) = boost::vertices( *gp ); v != v_end; ++v ) {
+   for( boost::tie( v, v_end ) = boost::vertices( *gp ); v != v_end; ++v ) {
       cerr << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << *v << " : ";
 
       bv_traits::adjacency_iterator a, a_end;
-      for( tie( a, a_end ) = boost::adjacent_vertices( *v, *gp );
+      for( boost::tie( a, a_end ) = boost::adjacent_vertices( *v, *gp );
            a != a_end;
            ++a ) {
          cerr << *a << " ";
@@ -48,7 +48,7 @@ int main(int argc, char** argv) {
       cerr << "In other words,\n" << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n";
       
        bv_traits::out_edge_iterator oe, oe_end;
-       for( tie( oe, oe_end ) = boost::out_edges( *v, *gp );
+       for( boost::tie( oe, oe_end ) = boost::out_edges( *v, *gp );
             oe != oe_end;
             ++oe ) {
           cerr << "<" << oe->first << ", " << oe->second << "> ";

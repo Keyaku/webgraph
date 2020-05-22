@@ -1,4 +1,4 @@
-/*               
+/*					
  * Portions copyright (c) 2003-2007, Paolo Boldi and Sebastiano Vigna. Translation copyright (c) 2007, Jacob Ratkiewicz
  *
  *  This program is free software; you can redistribute it and/or modify it
@@ -37,7 +37,7 @@ namespace utils {
  */
 
 int int2nat( int x ) {
-   return x >= 0 ? x << 1 : ( -x << 1 ) - 1;
+	return x >= 0 ? x << 1 : ( -x << 1 ) - 1;
 }
 
 /** Maps natural numbers bijectively into integers.
@@ -50,7 +50,7 @@ int int2nat( int x ) {
  */
 
 int nat2int( int x ) {
-   return x % 2 == 0 ? x >> 1 : -( ( x + 1 ) >> 1 );
+	return x % 2 == 0 ? x >> 1 : -( ( x + 1 ) >> 1 );
 }
 
 
@@ -58,12 +58,12 @@ std::string byte_to_binary( int x ) {
   std::string s;
   
   for( int i = 0 ; i < 8; i++ ) {
-    char str[] = {0,0};
-    str[0] = char( '0' + (x % 2) );
-    
-    s += str;
+	 char str[] = {0,0};
+	 str[0] = char( '0' + (x % 2) );
+	 
+	 s += str;
 
-    x >>= 1;
+	 x >>= 1;
   }
   
   std::reverse(s.begin(), s.end());
@@ -75,28 +75,28 @@ std::string int_to_binary( long x, int len ) {
   std::string s;
   
   for( int i = 0 ; i < 64; i++ ) {
-    s += (char)( '0' + ( x % 2 ) );
-    x >>= 1;
-      }
+	 s += (char)( '0' + ( x % 2 ) );
+	 x >>= 1;
+		}
   
   s = s.substr( 0, len );
   std::reverse( s.begin(), s.end() );
 
   for( int i = s.size() - 4; i > 0; i -= 4 ) {
-     s.insert( i, " " ); 
+	  s.insert( i, " " ); 
   }
 
   return s;
 }
 
 std::string byte_as_hex( int b ) {
-   using namespace std;
-   ostringstream oss;
+	using namespace std;
+	ostringstream oss;
 
-   oss << hex << b;
+	oss << hex << b;
 
-   string str = oss.str().substr(0,2);
-   return str;
+	string str = oss.str().substr(0,2);
+	return str;
 }
 
 }

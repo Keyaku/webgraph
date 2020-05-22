@@ -1,4 +1,4 @@
-/*               
+/*					
  * Portions copyright (c) 2003-2007, Paolo Boldi and Sebastiano Vigna. Translation copyright (c) 2007, Jacob Ratkiewicz
  *
  *  This program is free software; you can redistribute it and/or modify it
@@ -43,53 +43,53 @@ offline_graph::~offline_graph()
  * that will read the file when an iterator is used.
  */
 offline_graph offline_graph::load( const string& basename ) {
-   // all this method does is a quick sanity check before setting up some state. 
-   // Nothing is really read until iterators start getting created.
+	// all this method does is a quick sanity check before setting up some state. 
+	// Nothing is really read until iterators start getting created.
   
-   offline_graph result;
+	offline_graph result;
   
-   result.filename = basename + ".graph-txt";
+	result.filename = basename + ".graph-txt";
   
-   ifstream file( result.filename.c_str() );
+	ifstream file( result.filename.c_str() );
   
-   string nextline;
-        
-   getline( file, nextline );
+	string nextline;
+		
+	getline( file, nextline );
  
-   // read number of nodes
-   istringstream nl( nextline );
-        
-   nl >> result.n;
-        
-   assert( result.n > 0 );
-                
+	// read number of nodes
+	istringstream nl( nextline );
+		
+	nl >> result.n;
+		
+	assert( result.n > 0 );
+				
 
-   // now read number of edges
-   result.num_edges = 0;
-   edge_iterator b, e;
-   tie( b, e ) = result.get_edge_iterator();
-   for( ; b != e; ++b ) {
-      result.num_edges++;
-   }
+	// now read number of edges
+	result.num_edges = 0;
+	edge_iterator b, e;
+	boost::tie( b, e ) = result.get_edge_iterator();
+	for( ; b != e; ++b ) {
+		result.num_edges++;
+	}
 
-   return result;
+	return result;
 }
-        
+		
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * 
  */
 pair<offline_graph::vertex_iterator, offline_graph::vertex_iterator>
 offline_graph::get_vertex_iterator ( int from ) const {
-   if( from != 0 ) {
-      cerr << "from is not implemented.\n";
-   }
+	if( from != 0 ) {
+	  cerr << "from is not implemented.\n";
+	}
 
-   return make_pair( offline_vertex_iterator( filename.c_str() ),
-                     offline_vertex_iterator() );
+	return make_pair( offline_vertex_iterator( filename.c_str() ),
+					 offline_vertex_iterator() );
 
-//   return make_pair(offline_vertex_iterator( filename.c_str(), from ), 
-//		    offline_vertex_iterator(filename.c_str(), n));
+//	return make_pair(offline_vertex_iterator( filename.c_str(), from ), 
+//			 offline_vertex_iterator(filename.c_str(), n));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -99,10 +99,10 @@ offline_graph::get_vertex_iterator ( int from ) const {
  */
 pair<offline_graph::edge_iterator, offline_graph::edge_iterator> 
 offline_graph::get_edge_iterator() const {
-   edge_iterator begin( filename.c_str() ); 
-   edge_iterator end;
-   
-   return make_pair( begin, end );
+	edge_iterator begin( filename.c_str() ); 
+	edge_iterator end;
+	
+	return make_pair( begin, end );
 }
 
 } }

@@ -1,4 +1,4 @@
-/*               
+/*					
  * Portions copyright (c) 2003-2007, Paolo Boldi and Sebastiano Vigna. Translation copyright (c) 2007, Jacob Ratkiewicz
  *
  *  This program is free software; you can redistribute it and/or modify it
@@ -41,7 +41,7 @@ namespace webgraph { namespace ascii_graph {
  */
 offline_edge_iterator::offline_edge_iterator()
 {
-   is_end_marker = true;
+	is_end_marker = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -49,94 +49,94 @@ offline_edge_iterator::offline_edge_iterator()
 offline_edge_iterator::offline_edge_iterator(const char* filename) : 
 	current_vertex(filename), last_vertex()
 {
-   is_end_marker = false;
-   
-   ifstream getnumv( filename );
-   unsigned long numv;
-
-   getnumv >> numv;
-
-   this->num_vertices = numv;
+	is_end_marker = false;
 	
-   // this assumes there will be at least one vertex in the graph, so
-   assert( num_vertices >= 1 );
+	ifstream getnumv( filename );
+	unsigned long numv;
 
-   current_successor_index = -1;
-   fetch_next_edge();
+	getnumv >> numv;
+
+	this->num_vertices = numv;
+	
+	// this assumes there will be at least one vertex in the graph, so
+	assert( num_vertices >= 1 );
+
+	current_successor_index = -1;
+	fetch_next_edge();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //! Copy constructor.
 offline_edge_iterator::offline_edge_iterator( const offline_edge_iterator& rhs ) {
-   // el cheapo
-   *this = rhs;
+	// el cheapo
+	*this = rhs;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //! assignment operator
 offline_edge_iterator&
 offline_edge_iterator::operator = (const offline_edge_iterator& rhs ) {
-   current_edge = rhs.current_edge;
-   current_successor_index = rhs.current_successor_index;
-   current_vertex = rhs.current_vertex;
-   last_vertex = rhs.last_vertex;
-   is_end_marker = rhs.is_end_marker;
-   num_vertices = rhs.num_vertices;
+	current_edge = rhs.current_edge;
+	current_successor_index = rhs.current_successor_index;
+	current_vertex = rhs.current_vertex;
+	last_vertex = rhs.last_vertex;
+	is_end_marker = rhs.is_end_marker;
+	num_vertices = rhs.num_vertices;
 
-   return *this;
+	return *this;
 }
-                                                                   
+																						 
 
 ////////////////////////////////////////////////////////////////////////////////
 //! Common private method called whenever the iterator needs to be advanced.
 
 void offline_edge_iterator::fetch_next_edge() {
-   assert( !is_end_marker );
+	assert( !is_end_marker );
 	
-   // Check to see if the current vertex has another successor.
-   // current_successor++;
-   if( current_successor_index < outdegree(current_vertex) ) {
-      ++current_successor_index;
+	// Check to see if the current vertex has another successor.
+	// current_successor++;
+	if( current_successor_index < outdegree(current_vertex) ) {
+		++current_successor_index;
 #ifdef DEBUG
-      cerr << "fetch_next_edge\n"
-           << "\tIncrementing current successor index. it's now " 
-           << current_successor_index << endl
-           << "\tThis is because vertex is : " << current_vertex.as_str()
-           << "\toutdegree(vertex) : " << outdegree(current_vertex)
-           << endl;
+		cerr << "fetch_next_edge\n"
+			  << "\tIncrementing current successor index. it's now " 
+			  << current_successor_index << endl
+			  << "\tThis is because vertex is : " << current_vertex.as_str()
+			  << "\toutdegree(vertex) : " << outdegree(current_vertex)
+			  << endl;
 #endif
-   }
+	}
 
-   // check to see if we've run out of successors for the current node. If we have, increment -
-   // also skip any successor-less nodes.
+	// check to see if we've run out of successors for the current node. If we have, increment -
+	// also skip any successor-less nodes.
 	
-   while( current_successor_index == outdegree(current_vertex) ) {
-      ++current_vertex;
+	while( current_successor_index == outdegree(current_vertex) ) {
+		++current_vertex;
 		current_successor_index = 0;
-      	 
-      if( current_vertex == last_vertex ) {
-         // then we're at the end of the graph
-         this->is_end_marker = true;
-         return;	
-      }
+			 
+		if( current_vertex == last_vertex ) {
+			// then we're at the end of the graph
+			this->is_end_marker = true;
+			return;	
+		}
 #ifdef DEBUG
-      cerr << "fetch_next_edge:\n"
-           << "Incrementing vertex. New vertex is " 
-           << current_vertex.as_str()
-           << endl;
+		cerr << "fetch_next_edge:\n"
+			  << "Incrementing vertex. New vertex is " 
+			  << current_vertex.as_str()
+			  << endl;
 #endif
-   }
+	}
 	
-   // Sanity checks.
-   assert( 0 <= successors(current_vertex)[0] );
-   assert( successors(current_vertex)[0] < num_vertices );
+	// Sanity checks.
+	assert( 0 <= successors(current_vertex)[0] );
+	assert( successors(current_vertex)[0] < num_vertices );
 
-   current_edge = make_pair( *current_vertex, 
-                             successors(current_vertex)[current_successor_index] );
+	current_edge = make_pair( *current_vertex, 
+									  successors(current_vertex)[current_successor_index] );
 
 #ifdef DEBUG
-   cerr << "fetch_next_edge called.\n"
-        << "\tcurrent_edge : <" << current_edge.first << ", " << current_edge.second << ">\n";
+	cerr << "fetch_next_edge called.\n"
+		  << "\tcurrent_edge : <" << current_edge.first << ", " << current_edge.second << ">\n";
 #endif
 }
 

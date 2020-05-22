@@ -1,4 +1,4 @@
-/*               
+/*					
  * Portions copyright (c) 2003-2007, Paolo Boldi and Sebastiano Vigna. Translation copyright (c) 2007, Jacob Ratkiewicz
  *
  *  This program is free software; you can redistribute it and/or modify it
@@ -27,9 +27,9 @@
 
 namespace webgraph { namespace ascii_graph {
 
-   typedef std::pair<vertex_descriptor, vertex_descriptor> edge;
+	typedef std::pair<vertex_descriptor, vertex_descriptor> edge;
 
-   std::ostream& operator << ( std::ostream& out, const edge& e );   
+	std::ostream& operator << ( std::ostream& out, const edge& e );	
 } }
 
 #endif

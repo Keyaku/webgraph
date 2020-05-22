@@ -1,4 +1,4 @@
-/*               
+/*					
  * Portions copyright (c) 2003-2007, Paolo Boldi and Sebastiano Vigna. Translation copyright (c) 2007, Jacob Ratkiewicz
  *
  *  This program is free software; you can redistribute it and/or modify it
@@ -36,29 +36,29 @@ using namespace logs;
  */
 void obitstream::write( const int b ) {
 #ifndef CONFIG_FAST
-   logger( "obs" ) << LEVEL_DEBUG << "Write called on byte " << b << "\n";
+	logger( "obs" ) << LEVEL_DEBUG << "Write called on byte " << b << "\n";
 #endif
 
-   if ( avail-- == 0 ) {
-      assert( os != NULL );
-         
-      if ( no_buffer ) {
-         os->write( (char*)&b, sizeof(b) );
-         position++;
-         avail = 0;
-         return;
-      }
-      
-      // just to make the following a little cleaner..
-      vector<byte>& buf = *buffer;
-      
-      os->write( (char*)&buf[0], buf.size() );
-      position += buf.size();
-      avail = buf.size() - 1;
-      pos = 0;
-   }
-      
-   (*buffer)[ pos++ ]  = (byte)b;
+	if ( avail-- == 0 ) {
+		assert( os != NULL );
+			
+		if ( no_buffer ) {
+			os->write( (char*)&b, sizeof(b) );
+			position++;
+			avail = 0;
+			return;
+		}
+		
+		// just to make the following a little cleaner..
+		vector<byte>& buf = *buffer;
+		
+		os->write( (char*)&buf[0], buf.size() );
+		position += buf.size();
+		avail = buf.size() - 1;
+		pos = 0;
+	}
+		
+	(*buffer)[ pos++ ]  = (byte)b;
 }
 
 
@@ -76,17 +76,17 @@ void obitstream::write( const int b ) {
 
 int obitstream::write_in_current( const int b, const int len ) {
 #ifndef CONFIG_FAST
-   logger("obs") << LEVEL_DEBUG << "write_in_current( " << b << ", " << len << " )\n";
+	logger("obs") << LEVEL_DEBUG << "write_in_current( " << b << ", " << len << " )\n";
 #endif
-   current |= ( b & ( ( 1 << len ) - 1 ) ) << ( free -= len );
-   if ( free == 0 ) {
-      write( current );
-      free = 8;
-      current = 0;
-   }
-      
-   written_bits += len;
-   return len;
+	current |= ( b & ( ( 1 << len ) - 1 ) ) << ( free -= len );
+	if ( free == 0 ) {
+		write( current );
+		free = 8;
+		current = 0;
+	}
+		
+	written_bits += len;
+	return len;
 }
 
 /** Sets this stream bit position, if it is based on a {@link RepositionableStream} or
@@ -108,22 +108,22 @@ int obitstream::write_in_current( const int b, const int len ) {
 
 void obitstream::set_position( const long position ) {
 #ifndef CONFIG_FAST
-   logger( "obs" ) << LEVEL_DEBUG << "set_position( " << position << " )\n";
+	logger( "obs" ) << LEVEL_DEBUG << "set_position( " << position << " )\n";
 #endif
-   assert( position >= 0 );
-   assert( ( position & 7 ) == 0 );
-      
-   if ( wrapping ) {
-      assert( (unsigned long)position <= buffer->size() );
-      flush();
-      free = 8;
-      pos = (int)position;
-      avail = buffer->size() - pos;
-   } else {
-      flush();
-      if ( position >> 3 != this->position ) 
-         os->seekp( this->position = position >> 3 );
-   }
+	assert( position >= 0 );
+	assert( ( position & 7 ) == 0 );
+		
+	if ( wrapping ) {
+		assert( (unsigned long)position <= buffer->size() );
+		flush();
+		free = 8;
+		pos = (int)position;
+		avail = buffer->size() - pos;
+	} else {
+		flush();
+		if ( position >> 3 != this->position ) 
+			os->seekp( this->position = position >> 3 );
+	}
 }
 
 /** Writes a sequence of bits, starting from a given offset.
@@ -140,18 +140,18 @@ void obitstream::set_position( const long position ) {
 
 int obitstream::write( const byte bits[], const int offset, const int len ) {
 #ifndef CONFIG_FAST
-   logger( "obs" ) << LEVEL_DEBUG << "write( bits, offset, len )\n";
+	logger( "obs" ) << LEVEL_DEBUG << "write( bits, offset, len )\n";
 #endif
 
-   const int initial = 8 - ( offset & 0x7 );
-   if ( initial == 8 ) 
-      return write_byte_offset( bits, offset / 8, len );
-   if ( len <= initial ) 
-      /// used to be >>>
-      return write_int( ( 0xFF & bits[ offset / 8 ] ) >> ( initial - len ), len );
-   else
-      return write_int( bits[ offset / 8 ], initial ) + 
-         write_byte_offset( bits, offset / 8 + 1, len - initial );
+	const int initial = 8 - ( offset & 0x7 );
+	if ( initial == 8 ) 
+		return write_byte_offset( bits, offset / 8, len );
+	if ( len <= initial ) 
+		/// used to be >>>
+		return write_int( ( 0xFF & bits[ offset / 8 ] ) >> ( initial - len ), len );
+	else
+		return write_int( bits[ offset / 8 ], initial ) + 
+			write_byte_offset( bits, offset / 8 + 1, len - initial );
 }
 
 
@@ -170,57 +170,57 @@ int obitstream::write( const byte bits[], const int offset, const int len ) {
  */
 
 int obitstream::write_byte_offset( const byte bits[], 
-                                   const int offset, int len ) {
+											  const int offset, int len ) {
 #ifndef CONFIG_FAST
-   logger( "obs" ) << LEVEL_DEBUG << "write_byte_offset( bits, offset, len )\n";
+	logger( "obs" ) << LEVEL_DEBUG << "write_byte_offset( bits, offset, len )\n";
 #endif
 
-//    	for( int i = 0; i < len/8; i++ )
-//    		cerr << (int)bits[i] << " ";
-   		
-//    	cerr << endl;
-      
-   if ( len == 0 ) return 0;
-   if ( len <= free ) {
-      /// used to be >>>
-      // this is okay because bits[] is unsigned, so 0's will be shifted in
-      return write_in_current( bits[ offset ] >> 8 - len, len );
-   }
-   else {
-      const int shift = free;
-      int i, j;
-         
-//      cerr << "shift = " << shift << endl;
-         
-      // used to be >>>
-      write_in_current( bits[ offset ] >> 8 - shift, shift );
-         
-      len -= shift;
-         
-      j = offset;
-      i = len >> 3;
-      while( i-- != 0 ) {
-         // used to be >>>
-         write( bits[ j ] << shift | ( bits[ j + 1 ] & 0xFF ) >> 8 - shift );
-         written_bits += 8;
-         j++;
-      }
-         
-      const int q = len & 7;
-      if ( q != 0 ) {
-         if ( q <= 8 - shift ) {
-            /// used to be >>>
-            write_in_current( bits[ j ] >> 8 - shift - q, q );
-         }
-         else {
-            write_in_current( bits[ j ], 8 - shift );
-            /// used to be >>>
-            write_in_current( bits[ j + 1 ] >> 16 - q - shift, q + shift - 8 );
-         }
-      }
-         
-      return len + shift;
-   }
+//	 	for( int i = 0; i < len/8; i++ )
+//	 		cerr << (int)bits[i] << " ";
+			
+//	 	cerr << endl;
+		
+	if ( len == 0 ) return 0;
+	if ( len <= free ) {
+		/// used to be >>>
+		// this is okay because bits[] is unsigned, so 0's will be shifted in
+		return write_in_current( bits[ offset ] >> 8 - len, len );
+	}
+	else {
+		const int shift = free;
+		int i, j;
+			
+//		cerr << "shift = " << shift << endl;
+			
+		// used to be >>>
+		write_in_current( bits[ offset ] >> 8 - shift, shift );
+			
+		len -= shift;
+			
+		j = offset;
+		i = len >> 3;
+		while( i-- != 0 ) {
+			// used to be >>>
+			write( bits[ j ] << shift | ( bits[ j + 1 ] & 0xFF ) >> 8 - shift );
+			written_bits += 8;
+			j++;
+		}
+			
+		const int q = len & 7;
+		if ( q != 0 ) {
+			if ( q <= 8 - shift ) {
+				/// used to be >>>
+				write_in_current( bits[ j ] >> 8 - shift - q, q );
+			}
+			else {
+				write_in_current( bits[ j ], 8 - shift );
+				/// used to be >>>
+				write_in_current( bits[ j + 1 ] >> 16 - q - shift, q + shift - 8 );
+			}
+		}
+			
+		return len + shift;
+	}
 }
 
 /** Writes a fixed number of bits from an integer.
@@ -233,40 +233,40 @@ int obitstream::write_byte_offset( const byte bits[],
 
 int obitstream::write_int( int x, const int len ) {
 #ifndef CONFIG_FAST
-   logger( "obs" ) << LEVEL_DEBUG << "write_int( " << x << ", " << len << " )\n";
+	logger( "obs" ) << LEVEL_DEBUG << "write_int( " << x << ", " << len << " )\n";
 #endif
 
-   assert( len >= 0 && len <= 32 );
+	assert( len >= 0 && len <= 32 );
 
-   if ( len <= free ) 
-      return write_in_current( x, len );
+	if ( len <= free ) 
+		return write_in_current( x, len );
 
-   const int q = ( len - free ) & 7, blocks = ( len - free ) >> 3;
-   int i = blocks;
+	const int q = ( len - free ) & 7, blocks = ( len - free ) >> 3;
+	int i = blocks;
 
-   if ( q != 0 ) {
-      temp_buffer[ blocks ] = (byte)x;
-      x >>= q;
-   }
+	if ( q != 0 ) {
+		temp_buffer[ blocks ] = (byte)x;
+		x >>= q;
+	}
 
-   while( i-- != 0 ) {
-      temp_buffer[ i ] = (byte)x;
-      // used to be >>>
-      x >>= 8;
-   }
+	while( i-- != 0 ) {
+		temp_buffer[ i ] = (byte)x;
+		// used to be >>>
+		x >>= 8;
+	}
 
-   write_in_current( x, free );
+	write_in_current( x, free );
 
-   for( i = 0; i < blocks; i++ ) 
-//      write( &temp_buffer[ i ], sizeof( temp_buffer[i] )  );
-      write( temp_buffer[i] );
+	for( i = 0; i < blocks; i++ ) 
+//		write( &temp_buffer[ i ], sizeof( temp_buffer[i] )  );
+		write( temp_buffer[i] );
 
-   written_bits += blocks << 3;
+	written_bits += blocks << 3;
 
-   if ( q != 0 ) 
-      write_in_current( temp_buffer[ blocks ], q );
+	if ( q != 0 ) 
+		write_in_current( temp_buffer[ blocks ], q );
 
-   return len;
+	return len;
 }
 
 /** Writes a natural number in unary coding.
@@ -280,202 +280,202 @@ int obitstream::write_int( int x, const int len ) {
 
 int obitstream::write_unary( int x ) {
 #ifndef CONFIG_FAST
-   logger( "obs" ) << LEVEL_DEBUG << "write_unary( " << x << " )\n";
+	logger( "obs" ) << LEVEL_DEBUG << "write_unary( " << x << " )\n";
 #endif
 
-   assert( x >= 0 );
-      
-   if ( x < free ) {
+	assert( x >= 0 );
+		
+	if ( x < free ) {
 #ifndef CONFIG_FAST
-      logger("obs") << LEVEL_EVERYTHING << "Doing simple unary write.\n";
+		logger("obs") << LEVEL_EVERYTHING << "Doing simple unary write.\n";
 #endif
-      return write_in_current( 1, x + 1 );
-   }
+		return write_in_current( 1, x + 1 );
+	}
 
-#ifndef CONFIG_FAST      
-   logger("obs") << LEVEL_EVERYTHING << "Doing more complicated unary write.\n";
+#ifndef CONFIG_FAST		
+	logger("obs") << LEVEL_EVERYTHING << "Doing more complicated unary write.\n";
 #endif
 
-   const int shift = free;
-   x -= shift;
-      
-   written_bits += shift;
-   write( current );
-   free = 8;
-   current = 0;
-      
-   int i = x >> 3;
-      
-   written_bits += ( x & 0x7FFFFFF8 );
-      
-   while( i-- != 0 ) 
-      write( 0 );
-      
-   write_in_current( 1, ( x & 7 ) + 1 );
-      
-   return x + shift + 1;
+	const int shift = free;
+	x -= shift;
+		
+	written_bits += shift;
+	write( current );
+	free = 8;
+	current = 0;
+		
+	int i = x >> 3;
+		
+	written_bits += ( x & 0x7FFFFFF8 );
+		
+	while( i-- != 0 ) 
+		write( 0 );
+		
+	write_in_current( 1, ( x & 7 ) + 1 );
+		
+	return x + shift + 1;
 }
 
-//    /** Writes a long natural number in unary coding.
-//     *
-//     * @see #writeUnary(int)
-//     *
-//     * @param x a long natural number.
-//     * @return the number of bits written.
-//     * @throws IllegalArgumentException if you write to write a negative number.
-//     */
+//	 /** Writes a long natural number in unary coding.
+//	  *
+//	  * @see #writeUnary(int)
+//	  *
+//	  * @param x a long natural number.
+//	  * @return the number of bits written.
+//	  * @throws IllegalArgumentException if you write to write a negative number.
+//	  */
 
 // public long writeLongUnary( long x ) throws IOException {
-//    if ( x < 0 ) throw new IllegalArgumentException( "The argument " + x + " is negative" );
+//	 if ( x < 0 ) throw new IllegalArgumentException( "The argument " + x + " is negative" );
 
-//    if ( x < free ) return writeInCurrent( 1, (int)x + 1 );
+//	 if ( x < free ) return writeInCurrent( 1, (int)x + 1 );
 
-//    final int shift = free;
-//    x -= shift;
+//	 final int shift = free;
+//	 x -= shift;
 
-//    writtenBits += shift;
-//    write( current );
-//    free = 8;
-//    current = 0;
+//	 writtenBits += shift;
+//	 write( current );
+//	 free = 8;
+//	 current = 0;
 
-//    long i = x >> 3;
+//	 long i = x >> 3;
 
-//    writtenBits += ( x & 0x7FFFFFFFFFFFFFF8L );
+//	 writtenBits += ( x & 0x7FFFFFFFFFFFFFF8L );
 
-//    while( i-- != 0 ) write( 0 );
+//	 while( i-- != 0 ) write( 0 );
 
-//    writeInCurrent( 1, (int)( x & 7 ) + 1 );
+//	 writeInCurrent( 1, (int)( x & 7 ) + 1 );
 
-//    return x + shift + 1;
+//	 return x + shift + 1;
 // }
 
 int obitstream::most_significant_bit( const int x ) {
-   return
-      ( x < 1<<15 ?
-        ( x < 1<<7 ?
-          ( x < 1<<3 ?
-            ( x < 1<<1 ?
-              ( x < 1<<0 ?
-                x < 0 ? 31 : -1 /* 6 */
-                :
-                0 /* 5 */
-                 )
-              :
-              ( x < 1<<2 ?
-                1 /* 5 */
-                :
-                2 /* 5 */
-                 )
-               )
-            :
-            ( x < 1<<5 ?
-              ( x < 1<<4 ?
-                3 /* 5 */
-                :
-                4 /* 5 */
-                 )
-              :
-              ( x < 1<<6 ?
-                5 /* 5 */
-                :
-                6 /* 5 */
-                 )
-               )
-             )
-          :
-          ( x < 1<<11 ?
-            ( x < 1<<9 ?
-              ( x < 1<<8 ?
-                7 /* 5 */
-                :
-                8 /* 5 */
-                 )
-              :
-              ( x < 1<<10 ?
-                9 /* 5 */
-                :
-                10 /* 5 */
-                 )
-               )
-            :
-            ( x < 1<<13 ?
-              ( x < 1<<12 ?
-                11 /* 5 */
-                :
-                12 /* 5 */
-                 )
-              :
-              ( x < 1<<14 ?
-                13 /* 5 */
-                :
-                14 /* 5 */
-                 )
-               )
-             )
-           )
-        :
-        ( x < 1<<23 ?
-          ( x < 1<<19 ?
-            ( x < 1<<17 ?
-              ( x < 1<<16 ?
-                15 /* 5 */
-                :
-                16 /* 5 */
-                 )
-              :
-              ( x < 1<<18 ?
-                17 /* 5 */
-                :
-                18 /* 5 */
-                 )
-               )
-            :
-            ( x < 1<<21 ?
-              ( x < 1<<20 ?
-                19 /* 5 */
-                :
-                20 /* 5 */
-                 )
-              :
-              ( x < 1<<22 ?
-                21 /* 5 */
-                :
-                22 /* 5 */
-                 )
-               )
-             )
-          :
-          ( x < 1<<27 ?
-            ( x < 1<<25 ?
-              ( x < 1<<24 ?
-                23 /* 5 */
-                :
-                24 /* 5 */
-                 )
-              :
-              ( x < 1<<26 ?
-                25 /* 5 */
-                :
-                26 /* 5 */
-                 )
-               )
-            :
-            ( x < 1<<29 ?
-              ( x < 1<<28 ?
-                27 /* 5 */
-                :
-                28 /* 5 */
-                 )
-              :
-              ( x < 1<<30 ?
-                29 /* 5 */
-                :
-                30 /* 5 */
-                 )
-               )
-             )
-           )
-         );
+	return
+		( x < 1<<15 ?
+		  ( x < 1<<7 ?
+			 ( x < 1<<3 ?
+				( x < 1<<1 ?
+				  ( x < 1<<0 ?
+					 x < 0 ? 31 : -1 /* 6 */
+					 :
+					 0 /* 5 */
+					  )
+				  :
+				  ( x < 1<<2 ?
+					 1 /* 5 */
+					 :
+					 2 /* 5 */
+					  )
+					)
+				:
+				( x < 1<<5 ?
+				  ( x < 1<<4 ?
+					 3 /* 5 */
+					 :
+					 4 /* 5 */
+					  )
+				  :
+				  ( x < 1<<6 ?
+					 5 /* 5 */
+					 :
+					 6 /* 5 */
+					  )
+					)
+				 )
+			 :
+			 ( x < 1<<11 ?
+				( x < 1<<9 ?
+				  ( x < 1<<8 ?
+					 7 /* 5 */
+					 :
+					 8 /* 5 */
+					  )
+				  :
+				  ( x < 1<<10 ?
+					 9 /* 5 */
+					 :
+					 10 /* 5 */
+					  )
+					)
+				:
+				( x < 1<<13 ?
+				  ( x < 1<<12 ?
+					 11 /* 5 */
+					 :
+					 12 /* 5 */
+					  )
+				  :
+				  ( x < 1<<14 ?
+					 13 /* 5 */
+					 :
+					 14 /* 5 */
+					  )
+					)
+				 )
+			  )
+		  :
+		  ( x < 1<<23 ?
+			 ( x < 1<<19 ?
+				( x < 1<<17 ?
+				  ( x < 1<<16 ?
+					 15 /* 5 */
+					 :
+					 16 /* 5 */
+					  )
+				  :
+				  ( x < 1<<18 ?
+					 17 /* 5 */
+					 :
+					 18 /* 5 */
+					  )
+					)
+				:
+				( x < 1<<21 ?
+				  ( x < 1<<20 ?
+					 19 /* 5 */
+					 :
+					 20 /* 5 */
+					  )
+				  :
+				  ( x < 1<<22 ?
+					 21 /* 5 */
+					 :
+					 22 /* 5 */
+					  )
+					)
+				 )
+			 :
+			 ( x < 1<<27 ?
+				( x < 1<<25 ?
+				  ( x < 1<<24 ?
+					 23 /* 5 */
+					 :
+					 24 /* 5 */
+					  )
+				  :
+				  ( x < 1<<26 ?
+					 25 /* 5 */
+					 :
+					 26 /* 5 */
+					  )
+					)
+				:
+				( x < 1<<29 ?
+				  ( x < 1<<28 ?
+					 27 /* 5 */
+					 :
+					 28 /* 5 */
+					  )
+				  :
+				  ( x < 1<<30 ?
+					 29 /* 5 */
+					 :
+					 30 /* 5 */
+					  )
+					)
+				 )
+			  )
+			);
 }
 
 /** Writes a natural number in &gamma; coding.
@@ -492,35 +492,35 @@ int obitstream::most_significant_bit( const int x ) {
 
 int obitstream::write_gamma( int x ) {
 #ifndef CONFIG_FAST
-   logger( "obs" ) << LEVEL_DEBUG << "write_gamma( " << x << " )\n";
+	logger( "obs" ) << LEVEL_DEBUG << "write_gamma( " << x << " )\n";
 #endif
-   assert( x >= 0 );
-   
-   const int msb = most_significant_bit( ++x );
+	assert( x >= 0 );
+	
+	const int msb = most_significant_bit( ++x );
 
 #ifndef CONFIG_FAST
-   logger("obs") << LEVEL_EVERYTHING << "\tmsb = " << msb << "\n";
+	logger("obs") << LEVEL_EVERYTHING << "\tmsb = " << msb << "\n";
 #endif
 
-   const int l = write_unary( msb );
-   return l + ( msb != 0 ? write_int( x, msb ) : 0 );
+	const int l = write_unary( msb );
+	return l + ( msb != 0 ? write_int( x, msb ) : 0 );
 }
 
-//    /** Writes a long natural number in &gamma; coding.
-//     *
-//     * @see #writeGamma(int)
-//     *
-//     * @param x a long natural number.
-//     * @return the number of bits written.
-//     * @throws IllegalArgumentException if you write to write a negative number.
-//     */
+//	 /** Writes a long natural number in &gamma; coding.
+//	  *
+//	  * @see #writeGamma(int)
+//	  *
+//	  * @param x a long natural number.
+//	  * @return the number of bits written.
+//	  * @throws IllegalArgumentException if you write to write a negative number.
+//	  */
 
 // public int writeLongGamma( long x ) throws IOException {
-//    if ( x < 0 ) throw new IllegalArgumentException( "The argument " + x + " is negative" );
+//	 if ( x < 0 ) throw new IllegalArgumentException( "The argument " + x + " is negative" );
 
-//    final int msb = Fast.mostSignificantBit( ++x );
-//    final int l = writeUnary( msb );
-//    return l + ( msb != 0 ? writeLong( x, msb ) : 0 );
+//	 final int msb = Fast.mostSignificantBit( ++x );
+//	 final int l = writeUnary( msb );
+//	 return l + ( msb != 0 ? writeLong( x, msb ) : 0 );
 // }
 
 /** Writes a natural number in &delta; coding.
@@ -537,69 +537,69 @@ int obitstream::write_gamma( int x ) {
 
 int obitstream::write_delta( int x ) {
 #ifndef CONFIG_FAST
-   logger( "obs" ) << LEVEL_DEBUG << "write_delta( " << x << " )\n";
+	logger( "obs" ) << LEVEL_DEBUG << "write_delta( " << x << " )\n";
 #endif
 
-   assert( x >= 0 );
-   
-   const int msb = most_significant_bit( ++x );
-   const int l = write_gamma( msb );
-   return l + ( msb != 0 ? write_int( x, msb ) : 0 );
+	assert( x >= 0 );
+	
+	const int msb = most_significant_bit( ++x );
+	const int l = write_gamma( msb );
+	return l + ( msb != 0 ? write_int( x, msb ) : 0 );
 }
 
-//    /** Writes a long natural number in &delta; coding.
-//     *
-//     * @see #writeDelta(int)
-//     *
-//     * @param x a long natural number.
-//     * @return the number of bits written.
-//     * @throws IllegalArgumentException if you write to write a negative number.
-//     * @deprecated As of <code>MG4J</code> 0.2, replaced by {@link #writeLongDelta(long)}.
-//     */
+//	 /** Writes a long natural number in &delta; coding.
+//	  *
+//	  * @see #writeDelta(int)
+//	  *
+//	  * @param x a long natural number.
+//	  * @return the number of bits written.
+//	  * @throws IllegalArgumentException if you write to write a negative number.
+//	  * @deprecated As of <code>MG4J</code> 0.2, replaced by {@link #writeLongDelta(long)}.
+//	  */
 
 // public int writeDelta( long x ) throws IOException {
-//    return writeLongDelta( x );
+//	 return writeLongDelta( x );
 // }
 
-//    /** Writes a long natural number in &delta; coding.
-//     *
-//     * @see #writeDelta(int)
-//     *
-//     * @param x a long natural number.
-//     * @return the number of bits written.
-//     * @throws IllegalArgumentException if you write to write a negative number.
-//     */
+//	 /** Writes a long natural number in &delta; coding.
+//	  *
+//	  * @see #writeDelta(int)
+//	  *
+//	  * @param x a long natural number.
+//	  * @return the number of bits written.
+//	  * @throws IllegalArgumentException if you write to write a negative number.
+//	  */
 
 // public int writeLongDelta( long x ) throws IOException {
-//    if ( x < 0 ) throw new IllegalArgumentException( "The argument " + x + " is negative" );
+//	 if ( x < 0 ) throw new IllegalArgumentException( "The argument " + x + " is negative" );
 
-//    final int msb = Fast.mostSignificantBit( ++x );
-//    final int l = writeGamma( msb );
-//    return l + ( msb != 0 ? writeLong( x, msb ) : 0 );
+//	 final int msb = Fast.mostSignificantBit( ++x );
+//	 final int l = writeGamma( msb );
+//	 return l + ( msb != 0 ? writeLong( x, msb ) : 0 );
 // }
 
-//    /** Writes a natural number in a limited range using a minimal binary coding.
-//     *
-//     * @param x a natural number.
-//     * @param b a strict upper bound for <code>x</code>.
-//     * @return the number of bits written.
-//     * @throws IllegalArgumentException if you try to write a negative number or use a nonpositive base.
-//     */
+//	 /** Writes a natural number in a limited range using a minimal binary coding.
+//	  *
+//	  * @param x a natural number.
+//	  * @param b a strict upper bound for <code>x</code>.
+//	  * @return the number of bits written.
+//	  * @throws IllegalArgumentException if you try to write a negative number or use a nonpositive base.
+//	  */
 
 // public int writeMinimalBinary( final int x, final int b ) throws IOException {
-//    if ( b < 1 ) throw new IllegalArgumentException( "The bound " + b + " is not positive" );
+//	 if ( b < 1 ) throw new IllegalArgumentException( "The bound " + b + " is not positive" );
 
-//    return writeMinimalBinary( x, b, Fast.mostSignificantBit( b ) );
+//	 return writeMinimalBinary( x, b, Fast.mostSignificantBit( b ) );
 // }
 
-//    /** Writes a natural number in a limited range using a minimal binary coding.
-//     *
-//     * This method is faster than {@link #writeMinimalBinary(int,int)} because it does not
-//     * have to compute <code>log2b</code>.
-//     *
-//     * @param x a natural number.
-//     * @param b a strict upper bound for <code>x</code>.
-//     * @param log2b the floor of the base-2 logarithm of the bound.
+//	 /** Writes a natural number in a limited range using a minimal binary coding.
+//	  *
+//	  * This method is faster than {@link #writeMinimalBinary(int,int)} because it does not
+//	  * have to compute <code>log2b</code>.
+//	  *
+//	  * @param x a natural number.
+//	  * @param b a strict upper bound for <code>x</code>.
+//	  * @param log2b the floor of the base-2 logarithm of the bound.
 //     * @return the number of bits written.
 //     * @throws IllegalArgumentException if you try to write a negative number or use a nonpositive base.
 //     */

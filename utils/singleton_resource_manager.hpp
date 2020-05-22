@@ -1,4 +1,4 @@
-/*               
+/*					
  * Portions copyright (c) 2003-2007, Paolo Boldi and Sebastiano Vigna. Translation copyright (c) 2007, Jacob Ratkiewicz
  *
  *  This program is free software; you can redistribute it and/or modify it
@@ -41,52 +41,52 @@ namespace resource_manager {
 // a pointer to the result (which will be on the heap).
 template<class arg_type, class class_type>
 struct constructor_caller {
-   class_type* operator() ( const arg_type& a ) {
-      return new class_type( a );
-   }
+	class_type* operator() ( const arg_type& a ) {
+		return new class_type( a );
+	}
 };
 
 // Specialize for ofstreams and strings, since (annoyingly) the ofstream ctor wants an old-style
 // string.
 template<>
 struct constructor_caller<std::string, std::ofstream> {
-   std::ofstream* operator() ( const std::string& a ) {
-      return new std::ofstream( a.c_str() );
-   }
+	std::ofstream* operator() ( const std::string& a ) {
+		return new std::ofstream( a.c_str() );
+	}
 };
 
 
 template< class key_type, class resource_type, 
 	  class generator_type = constructor_caller<key_type, resource_type> >
 class singleton_resource_manager : public boost::noncopyable {
-   typedef boost::shared_ptr< resource_type > rp;
+	typedef boost::shared_ptr< resource_type > rp;
 
-   // registry
-   std::map< key_type, rp > registry;
-   
-   // "generator" functor which is used to generate new resources as necessary.
-   // it is assumed that this is "prototyped" as follows
-   // resource_type* generator( const key_type& constructor_args );
-   // It should also be default-constructable.
-   generator_type generator;
+	// registry
+	std::map< key_type, rp > registry;
+	
+	// "generator" functor which is used to generate new resources as necessary.
+	// it is assumed that this is "prototyped" as follows
+	// resource_type* generator( const key_type& constructor_args );
+	// It should also be default-constructable.
+	generator_type generator;
 
-   singleton_resource_manager(generator_type gen) : generator(gen) {}
-   singleton_resource_manager() {}
+	singleton_resource_manager(generator_type gen) : generator(gen) {}
+	singleton_resource_manager() {}
 
 public:
-   resource_type& get( const key_type& k ) {
-      // create a new one if it doesn't exist.
-      if( registry.find( k ) == registry.end() )
+	resource_type& get( const key_type& k ) {
+		// create a new one if it doesn't exist.
+		if( registry.find( k ) == registry.end() )
 	 registry[k].reset( generator(k) );
 
-      return *registry[k]; 
-   }
+		return *registry[k]; 
+	}
 
-   static singleton_resource_manager<key_type, resource_type, generator_type>& get_instance() {
-      static singleton_resource_manager<key_type, resource_type, generator_type> me;
+	static singleton_resource_manager<key_type, resource_type, generator_type>& get_instance() {
+		static singleton_resource_manager<key_type, resource_type, generator_type> me;
 
-      return me;
-   }
+		return me;
+	}
 };
 
 } }

@@ -1,4 +1,4 @@
-/*               
+/*					
  * Portions copyright (c) 2003-2007, Paolo Boldi and Sebastiano Vigna. Translation copyright (c) 2007, Jacob Ratkiewicz
  *
  *  This program is free software; you can redistribute it and/or modify it
@@ -35,58 +35,58 @@ typedef unsigned int vertex_label_t;
 // A vertex is described by both its label (v) and its successors
 class vertex_descriptor {
 private:
-   vertex_label_t label;
-   std::vector<vertex_label_t> successors;
-   bool __successors_loaded;
+	vertex_label_t label;
+	std::vector<vertex_label_t> successors;
+	bool __successors_loaded;
 
 public:
-   ////////////////////////////////////////////////////////////
-   vertex_descriptor() { __successors_loaded = false; }
-   
-   ////////////////////////////////////////////////////////////
-   vertex_descriptor( vertex_label_t l ) {
-      label = l;
-      __successors_loaded = false;
-   }
+	////////////////////////////////////////////////////////////
+	vertex_descriptor() { __successors_loaded = false; }
+	
+	////////////////////////////////////////////////////////////
+	vertex_descriptor( vertex_label_t l ) {
+		label = l;
+		__successors_loaded = false;
+	}
 
-   ////////////////////////////////////////////////////////////
-   operator vertex_label_t() const {
-      return label;
-   }
+	////////////////////////////////////////////////////////////
+	operator vertex_label_t() const {
+		return label;
+	}
 
-   ////////////////////////////////////////////////////////////
-   friend std::ostream& operator << (std::ostream& out, const vertex_descriptor& v );
-   
-   ////////////////////////////////////////////////////////////
-   bool operator == ( const vertex_descriptor& rhs ) const {
-      return label == rhs.label && successors == rhs.successors;
-   }
+	////////////////////////////////////////////////////////////
+	friend std::ostream& operator << (std::ostream& out, const vertex_descriptor& v );
+	
+	////////////////////////////////////////////////////////////
+	bool operator == ( const vertex_descriptor& rhs ) const {
+		return label == rhs.label && successors == rhs.successors;
+	}
 
-   ////////////////////////////////////////////////////////////
-   bool successors_loaded() const { return __successors_loaded; };
-   void successors_loaded( bool sl ) { __successors_loaded = sl; }
+	////////////////////////////////////////////////////////////
+	bool successors_loaded() const { return __successors_loaded; };
+	void successors_loaded( bool sl ) { __successors_loaded = sl; }
 
-   ////////////////////////////////////////////////////////////
-   const vertex_label_t& get_label() const { return label; }
-   vertex_label_t& label_ref() { return label; }
+	////////////////////////////////////////////////////////////
+	const vertex_label_t& get_label() const { return label; }
+	vertex_label_t& label_ref() { return label; }
 
-   ////////////////////////////////////////////////////////////
-   const std::vector<vertex_label_t>& get_successors() const {
-      if( __successors_loaded ) {
-         return successors;
-      } else {
-         throw 
-          std::logic_error( "Attempt to get successors of descriptor which does not have them loaded." );
-      }
-   }
+	////////////////////////////////////////////////////////////
+	const std::vector<vertex_label_t>& get_successors() const {
+		if( __successors_loaded ) {
+			return successors;
+		} else {
+			throw 
+			 std::logic_error( "Attempt to get successors of descriptor which does not have them loaded." );
+		}
+	}
 
-   ////////////////////////////////////////////////////////////
-   std::vector<vertex_label_t>& successors_ref() {
-      __successors_loaded = true;
-      return successors;
-   }
+	////////////////////////////////////////////////////////////
+	std::vector<vertex_label_t>& successors_ref() {
+		__successors_loaded = true;
+		return successors;
+	}
 
-   std::string as_str() const;
+	std::string as_str() const;
 };
 
 } }

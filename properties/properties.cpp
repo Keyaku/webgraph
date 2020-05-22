@@ -1,4 +1,4 @@
-/*               
+/*					
  * Portions copyright (c) 2003-2007, Paolo Boldi and Sebastiano Vigna. Translation copyright (c) 2007, Jacob Ratkiewicz
  *
  *  This program is free software; you can redistribute it and/or modify it
@@ -39,68 +39,68 @@ properties::~properties()
 }
 
 void properties::load( std::istream& in ) {
-   using namespace boost;
+	using namespace boost;
 
-   regex comment( "#.*" );
-   regex splitter( "(.*?)\\s*=\\s*(.*)" );
-   regex splitterblank( "(.*?)\\s*=\\s*$" );
+	regex comment( "#.*" );
+	regex splitter( "(.*?)\\s*=\\s*(.*)" );
+	regex splitterblank( "(.*?)\\s*=\\s*$" );
 
-   string nextline;
+	string nextline;
 
 #ifdef HARDCORE_DEBUG
-   cerr << "Load called.\n";
+	cerr << "Load called.\n";
 #endif
 
-   while( getline( in, nextline ) ) {
+	while( getline( in, nextline ) ) {
 #ifdef HARDCORE_DEBUG
-      cerr << "Just fetched line: " << nextline << endl;
+		cerr << "Just fetched line: " << nextline << endl;
 #endif
-      
-      // throw away comments
-      if( regex_match( nextline, comment ) ) {
-         continue;
-      }
-      
-      smatch what;
+		
+		// throw away comments
+		if( regex_match( nextline, comment ) ) {
+			continue;
+		}
+		
+		smatch what;
 
-      if( regex_match( nextline, what, splitter ) ) {
-         // what[1] contains the key, what[2] contains the value
-         back[what[1]] = what[2];
-      } else if( regex_match( nextline, what, splitterblank ) ) {
-         back[what[1]] = "";  
-      } else {
-//         cerr << "Everything broke for " << nextline << endl;
-         abort();  
-      }
-#ifdef HARDCORE_DEBUG      
-      cerr << "Loaded property " << what[1] << " = " << back[what[1]] << endl;
+		if( regex_match( nextline, what, splitter ) ) {
+			// what[1] contains the key, what[2] contains the value
+			back[what[1]] = what[2];
+		} else if( regex_match( nextline, what, splitterblank ) ) {
+			back[what[1]] = "";  
+		} else {
+//			cerr << "Everything broke for " << nextline << endl;
+			abort();  
+		}
+#ifdef HARDCORE_DEBUG		
+		cerr << "Loaded property " << what[1] << " = " << back[what[1]] << endl;
 #endif
-   }
+	}
 }
 
 void properties::store( std::ostream& out, const std::string& title ) {
-   using namespace std;
-   
-   
-   time_t rawtime;
-   struct tm * timeinfo;
-   
-   time ( &rawtime );
-   timeinfo = localtime ( &rawtime );
+	using namespace std;
+	
+	
+	time_t rawtime;
+	struct tm * timeinfo;
+	
+	time ( &rawtime );
+	timeinfo = localtime ( &rawtime );
 
-   out << "# " << title << "\n" 
-       << "# " << asctime( timeinfo );
+	out << "# " << title << "\n" 
+		 << "# " << asctime( timeinfo );
 
-   for( map<string, string>::iterator itor = back.begin();
-        itor != back.end();
-        ++itor ) {
-      out << itor->first << "=" << itor->second << "\n";
-   }
+	for( map<string, string>::iterator itor = back.begin();
+		  itor != back.end();
+		  ++itor ) {
+		out << itor->first << "=" << itor->second << "\n";
+	}
 }
 
 
 void properties::store( std::ostream& out ) {
-   store( out, "" );
+	store( out, "" );
 }
 
 }

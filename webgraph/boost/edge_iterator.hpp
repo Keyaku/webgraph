@@ -46,13 +46,13 @@ namespace webgraph { namespace bv_graph { namespace boost_integration {
       // interface
       edge_iterator( const webgraph::bv_graph::graph& gg ) {
 
-         tie( v, v_end ) = gg.get_node_iterator(0);
+         boost::tie( v, v_end ) = gg.get_node_iterator(0);
 
          assert( v != v_end );
 
          do {
             
-            tie( s, s_end ) = successors( v );
+            boost::tie( s, s_end ) = successors( v );
             current_vertex = *v;
             ++v;
          } while( s == s_end && v != v_end );
@@ -72,7 +72,7 @@ namespace webgraph { namespace bv_graph { namespace boost_integration {
          ++s;
 
          while( s == s_end && v != v_end ) {
-            tie( s, s_end ) = successors( v );
+            boost::tie( s, s_end ) = successors( v );
             current_vertex = *v;
             ++v;
          }

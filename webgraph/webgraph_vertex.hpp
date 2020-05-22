@@ -1,4 +1,4 @@
-/*               
+/*					
  * Portions copyright (c) 2003-2007, Paolo Boldi and Sebastiano Vigna. Translation copyright (c) 2007, Jacob Ratkiewicz
  *
  *  This program is free software; you can redistribute it and/or modify it
@@ -29,71 +29,71 @@
 namespace webgraph
 {
 
-   using namespace std;
+	using namespace std;
 
-   class webgraph_vertex
-   {
-   public:
-      typedef unsigned int node_type;
+	class webgraph_vertex
+	{
+	public:
+		typedef unsigned int node_type;
 
-   private:
-      vector<node_type> successors;
-      int label;
+	private:
+		vector<node_type> successors;
+		int label;
 	
-   public:
-      webgraph_vertex() : successors(0), label(-1) {	
-      }
+	public:
+		webgraph_vertex() : successors(0), label(-1) {	
+		}
 
-      webgraph_vertex( node_type l, const vector<node_type>& s ) : successors(s), label(l) {
-      }
+		webgraph_vertex( node_type l, const vector<node_type>& s ) : successors(s), label(l) {
+		}
 	
-      virtual ~webgraph_vertex() {}
+		virtual ~webgraph_vertex() {}
 	
-      typedef vector<node_type>::const_iterator successor_iterator;
+		typedef vector<node_type>::const_iterator successor_iterator;
 	
-      webgraph_vertex& operator = ( const webgraph_vertex& that ) {
-         this->successors = that.successors;
-         this->label = that.label;
+		webgraph_vertex& operator = ( const webgraph_vertex& that ) {
+			this->successors = that.successors;
+			this->label = that.label;
 
-         return *this;
-      }
-      
-      pair<successor_iterator, successor_iterator> get_successor_iterator() {
-         return make_pair(successors.begin(), successors.end() );	
-      }
+			return *this;
+		}
+		
+		pair<successor_iterator, successor_iterator> get_successor_iterator() {
+			return make_pair(successors.begin(), successors.end() );	
+		}
 
-      //! Get a successor iterator starting with a particular successor.
-      /*!
-       * This will work because successors are unique.
-       */
-      pair<successor_iterator, successor_iterator> 
-      get_successor_iterator( node_type successor_label ) { 
-         successor_iterator start, end;
+		//! Get a successor iterator starting with a particular successor.
+		/*!
+		 * This will work because successors are unique.
+		 */
+		pair<successor_iterator, successor_iterator> 
+		get_successor_iterator( node_type successor_label ) { 
+			successor_iterator start, end;
 
-         start = find( successors.begin(), successors.end(), successor_label );
-         end = successors.end();
+			start = find( successors.begin(), successors.end(), successor_label );
+			end = successors.end();
 
-         return make_pair( start, end );
-      }
+			return make_pair( start, end );
+		}
 
-      bool operator == ( const webgraph_vertex & other ) {
-         return this->label == other.label;
-      }
+		bool operator == ( const webgraph_vertex & other ) {
+			return this->label == other.label;
+		}
 	
-      node_type get_label() {
-         return label;
-      }
+		node_type get_label() {
+			return label;
+		}
 
-      string as_str() const {
-         ostringstream o;
+		string as_str() const {
+			ostringstream o;
 
-         o << "<" << label << "> : ";
+			o << "<" << label << "> : ";
 
-         copy( successors.begin(), successors.end(), ostream_iterator<int>( o, " " ) );
+			copy( successors.begin(), successors.end(), ostream_iterator<int>( o, " " ) );
 
-         return o.str();
-      }
-   };
+			return o.str();
+		}
+	};
 }
 
 #endif /*WEBGRAPHVERTEX_HPP_*/
